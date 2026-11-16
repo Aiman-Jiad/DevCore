@@ -30,12 +30,12 @@ const EXT_LANGUAGE: Record<string, string> = {
   py: "python",
   cpp: "cpp", cc: "cpp", cxx: "cpp", hpp: "cpp", hh: "cpp",
   c: "c", h: "c",
-  java: "java", go: "go", rs: "rust", sql: "sql", json: "json",
+  java: "java", go: "go", rs: "rust", rb: "ruby", sql: "sql", json: "json",
   css: "css", html: "html", md: "markdown", yml: "yaml", yaml: "yaml",
 };
 export const SUPPORTED_ACCEPT = Object.keys(EXT_LANGUAGE).map((e) => `.${e}`).join(",");
 export const ANALYZABLE_LANGUAGES = new Set([
-  "typescript", "javascript", "python", "cpp", "c", "java", "go", "rust", "sql", "html", "css",
+  "typescript", "javascript", "python", "cpp", "c", "java", "ruby", "go", "rust", "sql", "html", "css",
 ]);
 
 // Languages whose execution can be previewed/run live in the browser
@@ -49,6 +49,7 @@ export const LANGUAGE_LABELS: Record<string, string> = {
   cpp: "C++",
   c: "C",
   java: "Java",
+  ruby: "Ruby",
   go: "Go",
   rust: "Rust",
   sql: "SQL",
