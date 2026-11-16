@@ -14,6 +14,147 @@ import {
   Play, Loader2, Bug, FileCode, AlertCircle, Copy, Check, Upload, PanelLeft,
 } from "lucide-react";
 
+export interface LanguageTemplate {
+  label: string;
+  language: string;
+  extension: string;
+  code: string;
+}
+
+export const LANGUAGE_TEMPLATES: Record<string, LanguageTemplate> = {
+  typescript: {
+    label: "TypeScript",
+    language: "typescript",
+    extension: "ts",
+    code: `// TypeScript Starter
+function greet(name: string): string {
+  return \`Hello, \${name}!\`;
+}
+
+console.log(greet("DevCore AI"));
+`,
+  },
+  javascript: {
+    label: "JavaScript",
+    language: "javascript",
+    extension: "js",
+    code: `// JavaScript Starter
+function greet(name) {
+  return \`Hello, \${name}!\`;
+}
+
+console.log(greet("DevCore AI"));
+`,
+  },
+  python: {
+    label: "Python",
+    language: "python",
+    extension: "py",
+    code: `# Python Starter
+def greet(name: str) -> str:
+    return f"Hello, {name}!"
+
+if __name__ == "__main__":
+    print(greet("DevCore AI"))
+`,
+  },
+  cpp: {
+    label: "C++",
+    language: "cpp",
+    extension: "cpp",
+    code: `// C++ Starter
+#include <iostream>
+#include <string>
+
+int main() {
+    std::string name = "DevCore AI";
+    std::cout << "Hello, " << name << "!" << std::endl;
+    return 0;
+}
+`,
+  },
+  java: {
+    label: "Java",
+    language: "java",
+    extension: "java",
+    code: `// Java Starter
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, DevCore AI!");
+    }
+}
+`,
+  },
+  ruby: {
+    label: "Ruby",
+    language: "ruby",
+    extension: "rb",
+    code: `# Ruby Starter
+def greet(name)
+  "Hello, #{name}!"
+end
+
+puts greet("DevCore AI")
+`,
+  },
+  sql: {
+    label: "SQL",
+    language: "sql",
+    extension: "sql",
+    code: `-- SQL Starter
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO users (name) VALUES ('DevCore AI');
+SELECT * FROM users;
+`,
+  },
+  html: {
+    label: "HTML",
+    language: "html",
+    extension: "html",
+    code: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DevCore AI Preview</title>
+  <style>
+    body { font-family: sans-serif; background: #09090b; color: #f4f4f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+    h1 { color: #22d3ee; }
+  </style>
+</head>
+<body>
+  <h1>Hello from DevCore AI!</h1>
+</body>
+</html>
+`,
+  },
+  css: {
+    label: "CSS",
+    language: "css",
+    extension: "css",
+    code: `/* CSS Starter */
+:root {
+  --primary-color: #22d3ee;
+  --bg-color: #09090b;
+  --text-color: #f4f4f5;
+}
+
+body {
+  margin: 0;
+  padding: 2rem;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: system-ui, -apple-system, sans-serif;
+}
+`,
+  },
+};
+
 const CODE_PRESETS = [
   {
     name: "Two Pointers (Clean)",
@@ -282,6 +423,34 @@ export function MonacoCodeWorkspace() {
           <Badge variant="outline" className="font-mono text-[10px] py-0 px-1.5 text-zinc-400 capitalize">
             {activeLanguage || "typescript"}
           </Badge>
+
+          {/* Multi-Language Selector Dropdown */}
+          <select
+            value={activeLanguage && LANGUAGE_TEMPLATES[activeLanguage] ? activeLanguage : "typescript"}
+            onChange={(e) => {
+              const langKey = e.target.value;
+              const template = LANGUAGE_TEMPLATES[langKey];
+              if (template) {
+                setActiveFile(`main.${template.extension}`, template.code, template.language);
+                setExecutionError(null);
+                setExecutionFrames([]);
+                if (editorRef.current && monacoRef.current) {
+                  const model = editorRef.current.getModel();
+                  if (model) {
+                    monacoRef.current.editor.setModelLanguage(model, template.language);
+                  }
+                }
+              }
+            }}
+            className="rounded bg-zinc-900 border border-zinc-800 px-2 py-1 text-[11px] font-mono text-cyan-400 focus:outline-none focus:border-cyan-500 cursor-pointer hover:border-zinc-700 transition-colors"
+          >
+            <option value="" disabled>Select Language...</option>
+            {Object.entries(LANGUAGE_TEMPLATES).map(([key, t]) => (
+              <option key={key} value={key}>
+                {t.label}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="flex flex-wrap items-center gap-1.5">
